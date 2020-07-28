@@ -1,0 +1,18 @@
+<?php
+session_start();
+
+$host = "localhost";
+$user = "root";
+$pass = "";
+$dbnm = "inventory";
+
+$conn = mysqli_connect($host, $user, $pass, $dbnm);
+if (mysqli_connect_errno()) {
+    echo "Failed to connect to MySQL: " . mysqli_connect_error();
+    die();
+}
+
+if (!mysqli_set_charset($conn, "utf8")) {
+    printf("Error loading character set utf8: %s\n", mysqli_error($conn));
+    die();
+}
