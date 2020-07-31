@@ -47,18 +47,20 @@
 
           <div class="row">
             <div class="col-xl-12 col-lg-12">
-               <form>
+               <form id="form">
                   <div class="form-group row">
                     <label for="inputNama" class="col-sm-2 col-form-label">Nama</label>
                     <div class="col-sm-4">
-                      <input type="text" class="form-control" id="inputNama" >
+                      <input type="text" class="form-control" id="inputNama" name="nama">
                     </div>
                   </div>
                   <div class="form-group row">
                     <label for="inputJenis" class="col-sm-2 col-form-label">Jenis</label>
                     <div class="col-sm-4">
-                        <select id="inputJenis" class="form-control" name="">
+                        <select id="inputJenis" class="form-control" name="jenis">
                             <option value="">Pilih Jenis</option>
+                            <option value="ELEKTRONIK">ELEKTRONIK</option>
+                            <option value="NON-ELEKTRONIK">NON-ELEKTRONIK</option>
                         </select>
                     </div>
                   </div>
@@ -86,45 +88,6 @@
                           <th>Aksi</th>
                         </tr>
                       </thead>
-                      <tfoot>
-                        <tr>
-                          <th>Nama</th>
-                          <th>Jenis</th>
-                          <th>Aksi</th>
-                        </tr>
-                      </tfoot>
-                      <tbody>
-                        <tr>
-                          <td>Tiger Nixon</td>
-                          <td>System Architect</td>
-                          <td>Edinburgh</td>
-                        </tr>
-                        <tr>
-                          <td>Garrett Winters</td>
-                          <td>Accountant</td>
-                          <td>Tokyo</td>
-                        </tr>
-                        <tr>
-                          <td>Ashton Cox</td>
-                          <td>Junior Technical Author</td>
-                          <td>San Francisco</td>
-                        </tr>
-                        <tr>
-                          <td>Cedric Kelly</td>
-                          <td>Senior Javascript Developer</td>
-                          <td>Edinburgh</td>
-                        </tr>
-                        <tr>
-                          <td>Airi Satou</td>
-                          <td>Accountant</td>
-                          <td>Tokyo</td>
-                        </tr>
-                        <tr>
-                          <td>Brielle Williamson</td>
-                          <td>Integration Specialist</td>
-                          <td>New York</td>
-                        </tr>
-                      </tbody>
                     </table>
                   </div>
                 </div>
@@ -137,15 +100,7 @@
       </div>
       <!-- End of Main Content -->
 
-      <!-- Footer -->
-      <footer class="sticky-footer bg-white">
-        <div class="container my-auto">
-          <div class="copyright text-center my-auto">
-            <span>Copyright &copy; Your Website 2020</span>
-          </div>
-        </div>
-      </footer>
-      <!-- End of Footer -->
+      <?php include_once('fragments/footer.php') ?>
 
     </div>
     <!-- End of Content Wrapper -->
@@ -158,42 +113,57 @@
     <i class="fas fa-angle-up"></i>
   </a>
 
-  <!-- Logout Modal-->
-  <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
-          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">×</span>
-          </button>
-        </div>
-        <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
-        <div class="modal-footer">
-          <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-          <a class="btn btn-primary" href="login.html">Logout</a>
-        </div>
-      </div>
-    </div>
-  </div>
+<!-- Bootstrap core JavaScript-->
+<script src="vendor/jquery/jquery.min.js"></script>
+<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
-  <!-- Bootstrap core JavaScript-->
-  <script src="vendor/jquery/jquery.min.js"></script>
-  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- Core plugin JavaScript-->
+<script src="vendor/jquery-easing/jquery.easing.min.js"></script>
 
-  <!-- Core plugin JavaScript-->
-  <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+<!-- Custom scripts for all pages-->
+<script src="js/sb-admin-2.min.js"></script>
 
-  <!-- Custom scripts for all pages-->
-  <script src="js/sb-admin-2.min.js"></script>
+<!-- Page level plugins -->
+<script src="vendor/datatables/jquery.dataTables.min.js"></script>
+<script src="vendor/datatables/dataTables.bootstrap4.min.js"></script>
 
-  <!-- Page level plugins -->
-  <script src="vendor/datatables/jquery.dataTables.min.js"></script>
-  <script src="vendor/datatables/dataTables.bootstrap4.min.js"></script>
+<script>
+$(document).ready(function() {
+    // init data table
+    var table = $("#dataTable").DataTable({
+       "ajax": "actions/items.php",
+       searching:      true,
+       paging:         true,
+       "order": [[ 0, 'asc' ]],
+       "columns": [
+           { "data": "name" },
+           { "data": "type" },
+           {
+               "data": null,
+               "defaultContent": 
+                    '<button class="btn btn-danger btn-sm delete" type="button" data-target="#deleteModal" data-toggle="modal" title="Delete Data"    ><i class="fas fa-trash-alt"></i></button>' +
+                    '<button class="btn btn-warning btn-sm edit" type="button" title="Edit Data"><i class="fas fa-pencil-alt"></i></button>'
+           }
+       ]
+    });
+       
+    $('#form').submit(function(e) {
+        $.ajax({
+            url: 'actions/items.php', 
+            method: 'POST', 
+            data: $(this).serialize(),
+            success: function(res) {
+                table.ajax.url('actions/items.php').load();
+            },
+            error: function(res) {
+                console.log(res);
+            }
+        });
 
-  <!-- Page level custom scripts -->
-  <script src="js/demo/datatables-demo.js"></script>
-
+        e.preventDefault();
+    });
+});
+</script>
 </body>
 
 </html>
