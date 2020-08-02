@@ -67,7 +67,9 @@
                   <div class="form-group row">
                     <label class="col-sm-2 col-form-label">&nbsp;</label>
                     <div class="col-sm-10">
-                      <input type="submit" class="btn btn-primary" value="Submit">
+                        <input type="hidden" id="inputId" name="id">
+                        <input type="hidden" id="typeForm" name="is_edit">
+                        <input type="submit" class="btn btn-primary" value="Submit">
                     </div>
                   </div>
                 </form> 
@@ -146,17 +148,85 @@ $(document).ready(function() {
            }
        ]
     });
+
+    // event delete
+    $('#dataTable tbody').on( 'click', 'button.delete', function () {
+        var data = table.row( $(this).parents('tr') ).data();
+        deleteData(data.id);
+    } );
+    
+    // event edit
+    $('#dataTable tbody').on( 'click', 'button.edit', function () {
+        var data = table.row( $(this).parents('tr') ).data();
+        editData(data.id);
+    } );
+
+    function deleteData(id) {
+        var conf = confirm("Apakah Anda yakin ingin menghapus?");
+        if (conf) {
+            $.ajax({
+                url: "../actions/items.php?id=" +id, 
+                method: "DELETE",
+                success: function (res) {
+                    table.ajax.url('actions/items.php').load();
+                    alert('Success'); 
+                },
+                error: function (err) {
+                    alert('Failed'); 
+                }
+            });
+        }
+    }
+       
+    function editData(id) {
+        $.ajax({
+            url: "../actions/items.php?id=" +id, 
+            success: function (res) {
+                var item = res.data[0];
+
+                $('#inputNama').val(item.name);
+                $('#inputJenis').val(item.type);
+                $('#inputId').val(item.id);
+                $('#typeForm').val(1);
+            },
+            error: function (err) {
+                alert('Failed'); 
+            }
+        });
+    }
        
     $('#form').submit(function(e) {
+        if ($('#typeForm').val() == 1) {
+            // update
+            $.ajax({
+                url: 'actions/items.php', 
+                method: 'PUT', 
+                data: $(this).serialize(),
+                success: function(res) {
+                    table.ajax.url('actions/items.php').load();
+                    alert('Success'); 
+                    $('#form')[0].reset();
+                },
+                error: function(res) {
+                    alert('Failed'); 
+                }
+            });
+
+            return false;
+        }
+
+        // add
         $.ajax({
             url: 'actions/items.php', 
             method: 'POST', 
             data: $(this).serialize(),
             success: function(res) {
                 table.ajax.url('actions/items.php').load();
+                alert('Success'); 
+                $('#form')[0].reset();
             },
             error: function(res) {
-                console.log(res);
+                alert('Failed'); 
             }
         });
 
