@@ -21,7 +21,7 @@ if (empty($_POST['password'])) {
 }
 
 $username = mysqli_real_escape_string($conn, $_POST['username']);
-$password = $_POST['password'];
+$password = md5($_POST['password']);
 
 $sql = "SELECT * FROM m_user WHERE username='$username'";
 $results = mysqli_query($conn, $sql);
