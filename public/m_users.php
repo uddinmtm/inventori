@@ -101,25 +101,6 @@
                           <th>Aksi</th>
                         </tr>
                       </thead>
-                      <tfoot>
-                        <tr>
-                          <th>Nama</th>
-                          <th>Username</th>
-                          <th>Level</th>
-                          <th>Aksi</th>
-                        </tr>
-                      </tfoot>
-                      <tbody>
-                        <tr>
-                          <td>Tiger Nixon</td>
-                          <td>tiger</td>
-                          <td>Admin</td>
-                          <td>
-                            <button class="btn btn-primary"><i class="fas fa-pencil-alt"></i> Edit</button>
-                            <button class="btn btn-danger"><i class="fas fa-trash-alt"></i> Delete</button>
-                          </td>
-                        </tr>
-                      </tbody>
                     </table>
                   </div>
                 </div>
@@ -163,6 +144,112 @@
 
   <!-- Page level custom scripts -->
   <script src="js/demo/datatables-demo.js"></script>
+
+  <script>
+  $(document).ready(function() {
+      // init data table
+      var table = $("#dataTable").DataTable({
+         "ajax": "actions/items.php",
+         searching:      true,
+         paging:         true,
+         "order": [[ 0, 'asc' ]],
+         "columns": [
+             { "data": "name" },
+             { "data": "type" },
+             {
+                 "data": null,
+                 "defaultContent": 
+                      '<button class="btn btn-danger btn-sm delete" type="button" data-target="#deleteModal" data-toggle="modal" title="Delete Data"    ><i class="fas fa-trash-alt"></i></button>' +
+                      '<button class="btn btn-warning btn-sm edit" type="button" title="Edit Data"><i class="fas fa-pencil-alt"></i></button>'
+             }
+         ]
+      });
+
+      // event delete
+      $('#dataTable tbody').on( 'click', 'button.delete', function () {
+          var data = table.row( $(this).parents('tr') ).data();
+          deleteData(data.id);
+      } );
+      
+      // event edit
+      $('#dataTable tbody').on( 'click', 'button.edit', function () {
+          var data = table.row( $(this).parents('tr') ).data();
+          editData(data.id);
+      } );
+
+      function deleteData(id) {
+          var conf = confirm("Apakah Anda yakin ingin menghapus?");
+          if (conf) {
+              $.ajax({
+                  url: "../actions/items.php?id=" +id, 
+                  method: "DELETE",
+                  success: function (res) {
+                      table.ajax.url('actions/items.php').load();
+                      alert('Success'); 
+                  },
+                  error: function (err) {
+                      alert('Failed'); 
+                  }
+              });
+          }
+      }
+         
+      function editData(id) {
+          $.ajax({
+              url: "../actions/items.php?id=" +id, 
+              success: function (res) {
+                  var item = res.data[0];
+
+                  $('#inputNama').val(item.name);
+                  $('#inputJenis').val(item.type);
+                  $('#inputId').val(item.id);
+                  $('#typeForm').val(1);
+              },
+              error: function (err) {
+                  alert('Failed'); 
+              }
+          });
+      }
+         
+      $('#form').submit(function(e) {
+          if ($('#typeForm').val() == 1) {
+              // update
+              $.ajax({
+                  url: 'actions/items.php', 
+                  method: 'PUT', 
+                  data: $(this).serialize(),
+                  success: function(res) {
+                      table.ajax.url('actions/items.php').load();
+                      alert('Success'); 
+                      $('#form')[0].reset();
+                  },
+                  error: function(res) {
+                      alert('Failed'); 
+                  }
+              });
+
+              return false;
+          }
+
+          // add
+          $.ajax({
+              url: 'actions/items.php', 
+              method: 'POST', 
+              data: $(this).serialize(),
+              success: function(res) {
+                  table.ajax.url('actions/items.php').load();
+                  alert('Success'); 
+                  $('#form')[0].reset();
+              },
+              error: function(res) {
+                  alert('Failed'); 
+              }
+          });
+
+          e.preventDefault();
+      });
+  });
+  </script>
 
 </body>
 
