@@ -69,7 +69,7 @@
                   <div class="form-group row">
                     <label for="inputLevel" class="col-sm-2 col-form-label">Level</label>
                     <div class="col-sm-4">
-                        <select id="level" class="form-control" name="level">
+                        <select id="inputLevel" class="form-control" name="level">
                             <option value="">Pilih Level</option>
                             <option value="admin">Admin</option>
                             <option value="manager">Manager</option>
@@ -79,7 +79,9 @@
                   <div class="form-group row">
                     <label class="col-sm-2 col-form-label">&nbsp;</label>
                     <div class="col-sm-10">
-                      <input type="submit" class="btn btn-primary" value="Submit">
+                        <input type="hidden" id="inputId" name="id">
+                        <input type="hidden" id="typeForm" name="is_edit">
+                        <input type="submit" class="btn btn-primary" value="Submit">
                     </div>
                   </div>
                 </form> 
@@ -149,13 +151,15 @@
   $(document).ready(function() {
       // init data table
       var table = $("#dataTable").DataTable({
-         "ajax": "actions/items.php",
+         "ajax": "actions/users.php",
          searching:      true,
          paging:         true,
          "order": [[ 0, 'asc' ]],
          "columns": [
              { "data": "name" },
-             { "data": "type" },
+             { "data": "username" },
+             { "data": "password" },
+             { "data": "level" },
              {
                  "data": null,
                  "defaultContent": 
@@ -181,10 +185,10 @@
           var conf = confirm("Apakah Anda yakin ingin menghapus?");
           if (conf) {
               $.ajax({
-                  url: "../actions/items.php?id=" +id, 
+                  url: "../actions/users.php?id=" +id, 
                   method: "DELETE",
                   success: function (res) {
-                      table.ajax.url('actions/items.php').load();
+                      table.ajax.url('actions/users.php').load();
                       alert('Success'); 
                   },
                   error: function (err) {
@@ -196,13 +200,14 @@
          
       function editData(id) {
           $.ajax({
-              url: "../actions/items.php?id=" +id, 
+              url: "../actions/users.php?id=" +id, 
               success: function (res) {
                   var item = res.data[0];
 
                   $('#inputNama').val(item.name);
-                  $('#inputJenis').val(item.type);
-                  $('#inputId').val(item.id);
+                  $('#inputUsername').val(item.username);
+                  $('#inputPassword').val(item.password);
+                  $('#inputLevel').val(item.level);
                   $('#typeForm').val(1);
               },
               error: function (err) {
@@ -215,11 +220,11 @@
           if ($('#typeForm').val() == 1) {
               // update
               $.ajax({
-                  url: 'actions/items.php', 
+                  url: 'actions/users.php', 
                   method: 'PUT', 
                   data: $(this).serialize(),
                   success: function(res) {
-                      table.ajax.url('actions/items.php').load();
+                      table.ajax.url('actions/users.php').load();
                       alert('Success'); 
                       $('#form')[0].reset();
                   },
@@ -233,11 +238,11 @@
 
           // add
           $.ajax({
-              url: 'actions/items.php', 
+              url: 'actions/users.php', 
               method: 'POST', 
               data: $(this).serialize(),
               success: function(res) {
-                  table.ajax.url('actions/items.php').load();
+                  table.ajax.url('actions/users.php').load();
                   alert('Success'); 
                   $('#form')[0].reset();
               },
