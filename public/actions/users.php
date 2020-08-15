@@ -5,6 +5,7 @@ header('Content-Type: application/json');
 // get request body
 parse_str(file_get_contents("php://input"), $params);
 
+// add
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (empty($_POST['name'])) {
         echo json_encode(['message' => 'nama required']);
@@ -47,7 +48,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     die();
 }
 
+// read
 $sql = "SELECT id, name, level, username, password FROM m_user WHERE created_by='{$_SESSION['username']}'";
+if (!empty($_GET['id'])) {
+    $id = mysqli_real_escape_string($conn, $_GET['id']);
+    $sql.= "AND id={$id}";
+
+}
 $results = mysqli_query($conn, $sql);
 $rows =  mysqli_fetch_all($results, MYSQLI_ASSOC);
 if (empty($rows)) $rows = [];
