@@ -155,7 +155,6 @@
          "columns": [
              { "data": "name" },
              { "data": "username" },
-             { "data": "password" },
              { "data": "level" },
              {
                  "data": null,
