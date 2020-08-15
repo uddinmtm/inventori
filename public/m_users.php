@@ -47,7 +47,7 @@
 
           <div class="row">
             <div class="col-xl-12 col-lg-12">
-               <form>
+               <form id="form">
                   <div class="form-group row">
                     <label for="inputNama" class="col-sm-2 col-form-label">Nama</label>
                     <div class="col-sm-4">
