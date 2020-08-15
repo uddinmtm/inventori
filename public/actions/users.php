@@ -2,6 +2,9 @@
 include_once(__DIR__ . '/../../config.php');
 header('Content-Type: application/json');
 
+// get request body
+parse_str(file_get_contents("php://input"), $params);
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (empty($_POST['name'])) {
         echo json_encode(['message' => 'nama required']);
