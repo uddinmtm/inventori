@@ -204,6 +204,7 @@
                   $('#inputUsername').val(item.username);
                   $('#inputPassword').val(item.password);
                   $('#inputLevel').val(item.level);
+                  $('#inputId').val(item.id);
                   $('#typeForm').val(1);
               },
               error: function (err) {
