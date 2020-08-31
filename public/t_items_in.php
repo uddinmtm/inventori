@@ -193,88 +193,88 @@ $(document).ready(function() {
     });
 
     // init data table
-    var table = $("#dataTable").DataTable({
-       "ajax": "actions/items_out.php",
-       searching:      true,
-       paging:         true,
-       "order": [[ 0, 'asc' ]],
-       "columns": [
-           { "data": "transaction_code" },
-           { "data": "transaction_date" },
-           {
-               "data": null,
-               "defaultContent": 
-                    '<button class="btn btn-danger btn-sm delete" type="button" data-target="#deleteModal" data-toggle="modal" title="Delete Data"    ><i class="fas fa-trash-alt"></i></button>' +
-                    '<button class="btn btn-warning btn-sm edit" type="button" title="Edit Data"><i class="fas fa-pencil-alt"></i></button>' +
-                    '<button class="btn btn-info btn-sm view" type="button" title="View Data"><i class="fas fa-eye"></i></button>' 
-           }
-       ]
-    });
+    // var table = $("#dataTable").DataTable({
+    //    "ajax": "actions/items_out.php",
+    //    searching:      true,
+    //    paging:         true,
+    //    "order": [[ 0, 'asc' ]],
+    //    "columns": [
+    //        { "data": "transaction_code" },
+    //        { "data": "transaction_date" },
+    //        {
+    //            "data": null,
+    //            "defaultContent": 
+    //                 '<button class="btn btn-danger btn-sm delete" type="button" data-target="#deleteModal" data-toggle="modal" title="Delete Data"    ><i class="fas fa-trash-alt"></i></button>' +
+    //                 '<button class="btn btn-warning btn-sm edit" type="button" title="Edit Data"><i class="fas fa-pencil-alt"></i></button>' +
+    //                 '<button class="btn btn-info btn-sm view" type="button" title="View Data"><i class="fas fa-eye"></i></button>' 
+    //        }
+    //    ]
+    // });
 
-    // event delete
-    $('#dataTable tbody').on( 'click', 'button.delete', function () {
-        var data = table.row( $(this).parents('tr') ).data();
-        deleteData(data.transaction_code);
-    } );
+    // // event delete
+    // $('#dataTable tbody').on( 'click', 'button.delete', function () {
+    //     var data = table.row( $(this).parents('tr') ).data();
+    //     deleteData(data.transaction_code);
+    // } );
     
-    // event edit
-    $('#dataTable tbody').on( 'click', 'button.edit', function () {
-        var data = table.row( $(this).parents('tr') ).data();
-        editData(data.transaction_code);
-    } );
+    // // event edit
+    // $('#dataTable tbody').on( 'click', 'button.edit', function () {
+    //     var data = table.row( $(this).parents('tr') ).data();
+    //     editData(data.transaction_code);
+    // } );
 
-    // event view
-    $('#dataTable tbody').on( 'click', 'button.view', function () {
-        var data = table.row( $(this).parents('tr') ).data();
-        viewData(data.transaction_code);
-    } );
+    // // event view
+    // $('#dataTable tbody').on( 'click', 'button.view', function () {
+    //     var data = table.row( $(this).parents('tr') ).data();
+    //     viewData(data.transaction_code);
+    // } );
 
-    function deleteData(id) {
-        var conf = confirm("Apakah Anda yakin ingin menghapus?");
-        if (conf) {
-            $.ajax({
-                url: "../actions/items_out.php?id=" +id, 
-                method: "DELETE",
-                success: function (res) {
-                    table.ajax.url('actions/items_out.php').load();
-                    alert('Success'); 
-                },
-                error: function (err) {
-                    alert('Failed'); 
-                }
-            });
-        }
-    }
+    // function deleteData(id) {
+    //     var conf = confirm("Apakah Anda yakin ingin menghapus?");
+    //     if (conf) {
+    //         $.ajax({
+    //             url: "../actions/items_out.php?id=" +id, 
+    //             method: "DELETE",
+    //             success: function (res) {
+    //                 table.ajax.url('actions/items_out.php').load();
+    //                 alert('Success'); 
+    //             },
+    //             error: function (err) {
+    //                 alert('Failed'); 
+    //             }
+    //         });
+    //     }
+    // }
        
-    function editData(id) {
-        $.ajax({
-            url: "../actions/items.php?id=" +id, 
-            success: function (res) {
-                var item = res.data[0];
+    // function editData(id) {
+    //     $.ajax({
+    //         url: "../actions/items.php?id=" +id, 
+    //         success: function (res) {
+    //             var item = res.data[0];
 
-                $('#inputNama').val(item.name);
-                $('#inputJenis').val(item.type);
-                $('#inputId').val(item.id);
-                $('#typeForm').val(1);
-            },
-            error: function (err) {
-                alert('Failed'); 
-            }
-        });
-    }
+    //             $('#inputNama').val(item.name);
+    //             $('#inputJenis').val(item.type);
+    //             $('#inputId').val(item.id);
+    //             $('#typeForm').val(1);
+    //         },
+    //         error: function (err) {
+    //             alert('Failed'); 
+    //         }
+    //     });
+    // }
 
-    function viewData(id) {
-        $.ajax({
-            url: "../actions/items_out.php?id=" +id, 
-            success: function (res) {
-                var data = res.data[0];
+    // function viewData(id) {
+    //     $.ajax({
+    //         url: "../actions/items_out.php?id=" +id, 
+    //         success: function (res) {
+    //             var data = res.data[0];
 
-            },
-            error: function (err) {
-                alert('Failed'); 
-            }
-        });
-    }
+    //         },
+    //         error: function (err) {
+    //             alert('Failed'); 
+    //         }
+    //     });
+    // }
        
     $('#form').submit(function(e) {
         $('#btnSubmit').attr('disabled', true);
