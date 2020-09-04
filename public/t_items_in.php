@@ -283,11 +283,11 @@ $(document).ready(function() {
 
         // add
         $.ajax({
-            url: 'actions/items_out.php', 
+            url: 'actions/items_in.php', 
             method: 'POST', 
             data: $(this).serialize(),
             success: function(res) {
-                table.ajax.url('actions/items_out.php').load();
+                table.ajax.url('actions/items_in.php').load();
                 alert('Success'); 
                 $('#form')[0].reset();
                 $('#listBarang').empty();
