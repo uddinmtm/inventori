@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // insert detail
     foreach ($items as $item) {
-        $sql = "INSERT INTO t_stock_detail (transaction_code, item_id, stock_in, stock_out, created_at) VALUES ('{$nomor}', {$item->id}, 0, {$item->qty}, current_timestamp())";
+        $sql = "INSERT INTO t_stock_detail (transaction_code, item_id, stock_in, stock_out, created_at) VALUES ('{$nomor}', {$item->id}, {$item->qty}, 0, current_timestamp())";
 
         $result = mysqli_query($conn, $sql);
         if (!$result) {
