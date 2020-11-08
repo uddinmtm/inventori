@@ -47,7 +47,7 @@
 
           <div class="row">
             <div class="col-xl-12 col-lg-12">
-               <form>
+               <form id="form">
                   <div class="form-group row">
                     <label for="inputNama" class="col-sm-2 col-form-label">Nama</label>
                     <div class="col-sm-4">
@@ -69,7 +69,7 @@
                   <div class="form-group row">
                     <label for="inputLevel" class="col-sm-2 col-form-label">Level</label>
                     <div class="col-sm-4">
-                        <select id="level" class="form-control" name="level">
+                        <select id="inputLevel" class="form-control" name="level">
                             <option value="">Pilih Level</option>
                             <option value="admin">Admin</option>
                             <option value="manager">Manager</option>
@@ -79,7 +79,9 @@
                   <div class="form-group row">
                     <label class="col-sm-2 col-form-label">&nbsp;</label>
                     <div class="col-sm-10">
-                      <input type="submit" class="btn btn-primary" value="Submit">
+                        <input type="hidden" id="inputId" name="id">
+                        <input type="hidden" id="typeForm" name="is_edit">
+                        <input type="submit" class="btn btn-primary" value="Submit">
                     </div>
                   </div>
                 </form> 
@@ -101,25 +103,6 @@
                           <th>Aksi</th>
                         </tr>
                       </thead>
-                      <tfoot>
-                        <tr>
-                          <th>Nama</th>
-                          <th>Username</th>
-                          <th>Level</th>
-                          <th>Aksi</th>
-                        </tr>
-                      </tfoot>
-                      <tbody>
-                        <tr>
-                          <td>Tiger Nixon</td>
-                          <td>tiger</td>
-                          <td>Admin</td>
-                          <td>
-                            <button class="btn btn-primary"><i class="fas fa-pencil-alt"></i> Edit</button>
-                            <button class="btn btn-danger"><i class="fas fa-trash-alt"></i> Delete</button>
-                          </td>
-                        </tr>
-                      </tbody>
                     </table>
                   </div>
                 </div>
@@ -161,8 +144,114 @@
   <script src="vendor/datatables/jquery.dataTables.min.js"></script>
   <script src="vendor/datatables/dataTables.bootstrap4.min.js"></script>
 
-  <!-- Page level custom scripts -->
-  <script src="js/demo/datatables-demo.js"></script>
+  <script>
+  $(document).ready(function() {
+      // init data table
+      var table = $("#dataTable").DataTable({
+         "ajax": "actions/users.php",
+         searching:      true,
+         paging:         true,
+         "order": [[ 0, 'asc' ]],
+         "columns": [
+             { "data": "name" },
+             { "data": "username" },
+             { "data": "level" },
+             {
+                 "data": null,
+                 "defaultContent": 
+                      '<button class="btn btn-danger btn-sm delete" type="button" data-target="#deleteModal" data-toggle="modal" title="Delete Data"    ><i class="fas fa-trash-alt"></i></button>' +
+                      '<button class="btn btn-warning btn-sm edit" type="button" title="Edit Data"><i class="fas fa-pencil-alt"></i></button>'
+             }
+         ]
+      });
+
+      // event delete
+      $('#dataTable tbody').on( 'click', 'button.delete', function () {
+          var data = table.row( $(this).parents('tr') ).data();
+          deleteData(data.id);
+      } );
+      
+      // event edit
+      $('#dataTable tbody').on( 'click', 'button.edit', function () {
+          var data = table.row( $(this).parents('tr') ).data();
+          editData(data.id);
+      } );
+
+      function deleteData(id) {
+          var conf = confirm("Apakah Anda yakin ingin menghapus?");
+          if (conf) {
+              $.ajax({
+                  url: "../actions/users.php?id=" +id, 
+                  method: "DELETE",
+                  success: function (res) {
+                      table.ajax.url('actions/users.php').load();
+                      alert('Success'); 
+                  },
+                  error: function (err) {
+                      alert('Failed'); 
+                  }
+              });
+          }
+      }
+         
+      function editData(id) {
+          $.ajax({
+              url: "../actions/users.php?id=" +id, 
+              success: function (res) {
+                  var item = res.data[0];
+
+                  $('#inputNama').val(item.name);
+                  $('#inputUsername').val(item.username);
+                  $('#inputPassword').val(item.password);
+                  $('#inputLevel').val(item.level);
+                  $('#inputId').val(item.id);
+                  $('#typeForm').val(1);
+              },
+              error: function (err) {
+                  alert('Failed'); 
+              }
+          });
+      }
+         
+      $('#form').submit(function(e) {
+          if ($('#typeForm').val() == 1) {
+              // update
+              $.ajax({
+                  url: 'actions/users.php', 
+                  method: 'PUT', 
+                  data: $(this).serialize(),
+                  success: function(res) {
+                      table.ajax.url('actions/users.php').load();
+                      alert('Success'); 
+                      $('#form')[0].reset();
+                  },
+                  error: function(res) {
+                      alert('Failed'); 
+                  }
+              });
+
+              return false;
+          }
+
+          // add
+          $.ajax({
+              url: 'actions/users.php', 
+              method: 'POST', 
+              data: $(this).serialize(),
+              success: function(res) {
+                  table.ajax.url('actions/users.php').load();
+                  alert('Success'); 
+                  $('#form')[0].reset();
+              },
+              error: function(res) {
+                  alert('Failed'); 
+              }
+          });
+
+          e.preventDefault();
+      });
+  });
+  </script>
 
 </body>
 
