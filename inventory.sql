@@ -1,8 +1,8 @@
--- MariaDB dump 10.17  Distrib 10.4.13-MariaDB, for Linux (x86_64)
+-- MariaDB dump 10.17  Distrib 10.5.6-MariaDB, for Linux (x86_64)
 --
 -- Host: localhost    Database: inventory
 -- ------------------------------------------------------
--- Server version	10.4.13-MariaDB
+-- Server version	10.5.6-MariaDB
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -35,17 +35,9 @@ CREATE TABLE `m_item` (
   KEY `m_item_FK_1` (`updated_by`),
   CONSTRAINT `m_item_FK` FOREIGN KEY (`created_by`) REFERENCES `m_user` (`username`),
   CONSTRAINT `m_item_FK_1` FOREIGN KEY (`updated_by`) REFERENCES `m_user` (`username`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Dumping data for table `m_item`
---
-
-LOCK TABLES `m_item` WRITE;
-/*!40000 ALTER TABLE `m_item` DISABLE KEYS */;
-/*!40000 ALTER TABLE `m_item` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `m_user`
@@ -66,7 +58,7 @@ CREATE TABLE `m_user` (
   `updated_by` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `m_user_UN` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -75,7 +67,7 @@ CREATE TABLE `m_user` (
 
 LOCK TABLES `m_user` WRITE;
 /*!40000 ALTER TABLE `m_user` DISABLE KEYS */;
-INSERT INTO `m_user` VALUES (1,'Super Admin','super_admin','admin','admin','2020-07-25 09:29:47','admin',NULL,NULL);
+INSERT INTO `m_user` VALUES (1,'Super Admin','super_admin','admin','21232f297a57a5a743894a0e4a801fc3','2020-07-25 09:29:47','admin',NULL,'admin'),(2,'Manager','manager','manager','manager','2020-11-08 09:12:34','admin',NULL,NULL);
 /*!40000 ALTER TABLE `m_user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -91,6 +83,7 @@ CREATE TABLE `t_stock` (
   `transaction_code` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
   `transaction_date` date NOT NULL,
   `description` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `status` char(10) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `created_by` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
@@ -100,17 +93,8 @@ CREATE TABLE `t_stock` (
   KEY `t_stock_FK_1` (`updated_by`),
   CONSTRAINT `t_stock_FK` FOREIGN KEY (`created_by`) REFERENCES `m_user` (`username`),
   CONSTRAINT `t_stock_FK_1` FOREIGN KEY (`updated_by`) REFERENCES `m_user` (`username`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `t_stock`
---
-
-LOCK TABLES `t_stock` WRITE;
-/*!40000 ALTER TABLE `t_stock` DISABLE KEYS */;
-/*!40000 ALTER TABLE `t_stock` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `t_stock_detail`
@@ -130,17 +114,8 @@ CREATE TABLE `t_stock_detail` (
   PRIMARY KEY (`id`),
   KEY `t_stock_detail_FK` (`item_id`),
   CONSTRAINT `t_stock_detail_FK` FOREIGN KEY (`item_id`) REFERENCES `m_item` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `t_stock_detail`
---
-
-LOCK TABLES `t_stock_detail` WRITE;
-/*!40000 ALTER TABLE `t_stock_detail` DISABLE KEYS */;
-/*!40000 ALTER TABLE `t_stock_detail` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Dumping routines for database 'inventory'
@@ -155,4 +130,3 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-07-28 19:56:40
