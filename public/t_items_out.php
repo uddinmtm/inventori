@@ -224,6 +224,7 @@ $(document).ready(function() {
         url: 'actions/items.php',
         dataType: 'json',
         success: function(res) {
+            var items = res.data;
             items.forEach(function(item) {
                 var opt = '<option value="'+ item.id +'|'+ item.name +' - '+ item.type +'">'+ item.name +' - '+ item.type +'</option>';
                 $('#selNama').append(opt);

@@ -45,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
     }
 
-    $sql = "INSERT INTO t_stock (transaction_code, transaction_date, description, created_at, created_by) VALUES('{$nomor}', '{$tanggal}', '{$keterangan}', current_timestamp(), '{$_SESSION['username']}')";
+    $sql = "INSERT INTO t_stock (transaction_code, transaction_date, description, status, created_at, created_by) VALUES('{$nomor}', '{$tanggal}', '{$keterangan}', 'OUT', current_timestamp(), '{$_SESSION['username']}')";
 
     $result = mysqli_query($conn, $sql);
     if (!$result) {
@@ -142,7 +142,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
 }
 
 // read
-$sql = "SELECT * FROM t_stock WHERE created_by='{$_SESSION['username']}' ";
+$sql = "SELECT * FROM t_stock WHERE status='OUT' AND created_by='{$_SESSION['username']}' ";
 if (!empty($_GET['id'])) {
     $id = mysqli_real_escape_string($conn, $_GET['id']);
     $sql.= "AND transaction_code='{$id}'";
