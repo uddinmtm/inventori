@@ -143,6 +143,49 @@
         </div>
         <!-- /.container-fluid -->
 
+        <!-- Modal -->
+        <div class="modal fade" id="viewModal" tabindex="-1" role="dialog" aria-labelledby="viewModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="viewModalLabel">Detail</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+               <dl class="row">
+                  <dt class="col-sm-3">Nomor</dt>
+                  <dd id="labelNomor" class="col-sm-9"></dd>
+
+                  <dt class="col-sm-3">Keterangan</dt>
+                  <dd id="labelKeterangan" class="col-sm-9">
+                  </dd>
+
+                  <dt class="col-sm-3">Tanggal</dt>
+                  <dd id="labelTanggal" class="col-sm-9"></dd>
+                </dl> 
+                <h5>Barang</h5>
+                <table class="table table-border">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Nama</th>
+                            <th>In</th>
+                            <th>Out</th>
+                        </tr>
+                    </thead>
+                    <tbody id="labelListBarang">
+                    </tbody>
+                </table>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
       <!-- End of Main Content -->
 
@@ -247,13 +290,25 @@ $(document).ready(function() {
        
     function editData(id) {
         $.ajax({
-            url: "../actions/items.php?id=" +id, 
+            url: "../actions/items_out.php?id=" +id, 
             success: function (res) {
-                var item = res.data[0];
+                var data = res.data[0];
 
-                $('#inputNama').val(item.name);
-                $('#inputJenis').val(item.type);
-                $('#inputId').val(item.id);
+                $('#inputNomor').val(data.transaction_code);
+                $('#inputKeterangan').val(data.description);
+                $('#inputTanggal').val(data.transaction_date);
+
+                listItems = [];
+                (data.detail).forEach(function (item, key) {
+                    listItems.push({
+                        "id": item.item_id,
+                        "name": item.name,
+                        "qty": item.stock_out
+                    });
+                });
+                generateListItems(listItems);
+
+                $('#inputId').val(data.transaction_code);
                 $('#typeForm').val(1);
             },
             error: function (err) {
@@ -267,7 +322,22 @@ $(document).ready(function() {
             url: "../actions/items_out.php?id=" +id, 
             success: function (res) {
                 var data = res.data[0];
+                $('#labelNomor').html(data.transaction_code);
+                $('#labelKeterangan').html('<p>' + data.description + '</p>');
+                $('#labelTanggal').html(data.transaction_date);
 
+                // generate rows
+                $('#labelListBarang').empty();
+                (data.detail).forEach(function (item, key) {
+                    var row = '<tr>' +
+                        '<td>'+ (key+1) +'</td>' +
+                        '<td>'+ item.name +'</td>' +
+                        '<td>'+ item.stock_in +'</td>' +
+                        '<td>'+ item.stock_out +'</td>' +
+                    '</tr>'; 
+                    $('#labelListBarang').append(row);
+                });
+                $('#viewModal').modal('show');
             },
             error: function (err) {
                 alert('Failed'); 
@@ -279,6 +349,28 @@ $(document).ready(function() {
         $('#btnSubmit').attr('disabled', true);
         var jsonItems = JSON.stringify(listItems);
         $('#jsonItems').val(jsonItems);
+        $('#btnSubmit').attr('disabled', false);
+
+        if ($('#typeForm').val() == 1) {
+            // update
+            $.ajax({
+                url: 'actions/items_out.php', 
+                method: 'PUT', 
+                data: $(this).serialize(),
+                success: function(res) {
+                    table.ajax.url('actions/items_out.php').load();
+                    alert('Success'); 
+                    $('#form')[0].reset();
+                    $('#listBarang').empty();
+                },
+                error: function(res) {
+                    var data = res.responseJSON;
+                    alert('Failed: '+ data.message); 
+                }
+            });
+
+            return false;
+        }
 
         // add
         $.ajax({
