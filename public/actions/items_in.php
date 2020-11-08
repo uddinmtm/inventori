@@ -150,8 +150,10 @@ if (!empty($_GET['id'])) {
 }
 
 $results = mysqli_query($conn, $sql);
-$rows =  mysqli_fetch_all($results, MYSQLI_ASSOC);
-if (empty($rows)) $rows = [];
+$rows = [];
+if (!empty($results)) {
+    $rows = mysqli_fetch_all($results, MYSQLI_ASSOC);
+}
 
 if (!empty($_GET['id'])) {
     $id = mysqli_real_escape_string($conn, $_GET['id']);
