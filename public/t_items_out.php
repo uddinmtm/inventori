@@ -63,7 +63,7 @@
                   <div class="form-group row">
                     <label for="inputTanggal" class="col-sm-2 col-form-label">Tanggal</label>
                     <div class="col-sm-3">
-                      <input type="text" class="form-control" id="inputTanggal" name="tanggal" placeholder="yyyy-mm-dd">
+                      <input type="date" class="form-control" id="inputTanggal" name="tanggal" placeholder="yyyy-mm-dd">
                     </div>
                   </div>
 <br>
