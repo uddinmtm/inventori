@@ -92,7 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
 }
 
 // read
-$sql = "SELECT id, name, type FROM m_item WHERE created_by='{$_SESSION['username']}' ";
+$sql = "SELECT id, name, type FROM m_item WHERE 1=1 ";
 if (!empty($_GET['id'])) {
     $id = mysqli_real_escape_string($conn, $_GET['id']);
     $sql.= "AND id={$id}";
